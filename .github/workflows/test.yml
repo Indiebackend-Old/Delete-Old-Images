@@ -21,4 +21,4 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ./
         with:
-          scw-token: ${{ secrets.SCW_TOKEN }}
+          scwtoken: ${{ secrets.SCW_SECRET_TOKEN }}
