@@ -114,7 +114,7 @@ const core = __importStar(__webpack_require__(186));
 const dotenv_1 = __webpack_require__(437);
 dotenv_1.config();
 const BASE_URL = "https://api.scaleway.com/registry/v1/regions/fr-par/";
-const TOKEN = core.getInput("scw-token") || process.env.SCW_TOKEN || "";
+const TOKEN = core.getInput("scwtoken") || process.env.SCW_TOKEN || "";
 const NAMESPACE_ID = "9366b4e1-8d79-4caf-8685-6c315183c051";
 function listImages() {
     return __awaiter(this, void 0, void 0, function* () {
