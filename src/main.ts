@@ -1,19 +1,38 @@
-import * as core from '@actions/core'
-import {wait} from './wait'
+import * as core from "@actions/core";
+import {config} from "dotenv";
+import {deleteTags, listTags} from "./scaleway";
+config();
+
+const excludeImages = ["dev-latest", "latest"];
+
+const IMAGES_TO_KEEP = 3; // We keep the last 2 images
 
 async function run(): Promise<void> {
-  try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
+	try {
+		core.startGroup("Processing images");
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+		core.info("Listing images");
+		const images = await listTags();
 
-    core.setOutput('time', new Date().toTimeString())
-  } catch (error) {
-    core.setFailed(error.message)
-  }
+		core.info("Listing images to delete");
+		const toDeleteIds: string[] = [];
+
+		for (const img of images)
+			toDeleteIds.push(
+				...img.tags
+					.filter(e => !excludeImages.includes(e.name))
+					.sort()
+					.reverse() // More performant than sorting in reverse order
+					.slice(IMAGES_TO_KEEP)
+					.map(e => e.id),
+			),
+				core.endGroup();
+
+		core.info(`Deleting ${toDeleteIds.length}/${images.length} images`);
+		await deleteTags(toDeleteIds);
+	} catch (error) {
+		core.setFailed(error.message);
+	}
 }
 
-run()
+run();
