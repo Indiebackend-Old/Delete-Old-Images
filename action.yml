@@ -1,8 +1,8 @@
-name: 'Delete Old Images'
-description: 'Delete last n images in registry'
+name: 'IdbOldImages'
+description: 'Delete last n images in registry (Scaleway)'
 author: 'Indiebackend'
 inputs:
-  scw-token: # change this
+  scw-token:
     required: true
     description: 'Scaleway Token'
     default: ''
